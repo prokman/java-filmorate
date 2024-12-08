@@ -6,18 +6,18 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FieldChecker;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
+    private final UserStorage userStorage = new UserStorage();
     private final FieldChecker fieldChecker = new FieldChecker();
     private static final Logger log =
             (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(UserController.class);
+    private int userId = 0;
 
     @PostMapping
     public User addUser(@RequestBody User user) {
@@ -33,7 +33,7 @@ public class UserController {
         }
         user.setId(getNextId());
         log.info("пользователю присвоен id - {}", user.getId());
-        users.put(user.getId(), user);
+        userStorage.getUsers().put(user.getId(), user);
         log.info("пользователь добавлен в таблицу");
         return user;
     }
@@ -50,13 +50,13 @@ public class UserController {
             log.info("Имя пользователя пустое. Полю \"имя пользоватлея\" присвоено значение логина - {}",
                     newUser.getLogin());
         }
-        User existingUser = users.get(newUser.getId());
+        User existingUser = userStorage.getUsers().get(newUser.getId());
         if (existingUser != null) {
             existingUser.setEmail(newUser.getEmail());
             existingUser.setLogin(newUser.getLogin());
             existingUser.setName(newUser.getName());
             existingUser.setBirthday(newUser.getBirthday());
-            users.put(existingUser.getId(), existingUser);
+            userStorage.getUsers().put(existingUser.getId(), existingUser);
             log.info("данные пользователя обновлены и добавлены в таблицу");
             return existingUser;
         }
@@ -66,16 +66,11 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAllUsers() {
-        return users.values();
+        return userStorage.getUsers().values();
     }
 
     private int getNextId() {
-        int currentMaxId = users.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+        return ++userId;
     }
 
 }

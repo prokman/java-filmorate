@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FieldChecker;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final FilmStorage filmStorage = new FilmStorage();
     private final FieldChecker fieldChecker = new FieldChecker();
     private static final Logger log =
             (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(FilmController.class);
+    private int filmId = 0;
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
@@ -30,7 +30,7 @@ public class FilmController {
         fieldChecker.checkFilmField(film);
         film.setId(getNextId());
         log.info("фильму присвоен id - {}", film.getId());
-        films.put(film.getId(), film);
+        filmStorage.getFilms().put(film.getId(), film);
         log.info("фильм записан в таблицу");
         return film;
     }
@@ -42,13 +42,13 @@ public class FilmController {
             throw new NotFoundException("передан пустой запрос");
         }
         fieldChecker.checkFilmField(newfilm);
-        Film existingFilm = films.get(newfilm.getId());
+        Film existingFilm = filmStorage.getFilms().get(newfilm.getId());
         if (existingFilm != null) {
             existingFilm.setName(newfilm.getName());
             existingFilm.setDescription(newfilm.getDescription());
             existingFilm.setDuration(newfilm.getDuration());
             existingFilm.setReleaseDate(newfilm.getReleaseDate());
-            films.put(existingFilm.getId(), existingFilm);
+            filmStorage.getFilms().put(existingFilm.getId(), existingFilm);
             log.info("данные фильма обновлены и помещены в таблицу");
             return existingFilm;
         }
@@ -58,15 +58,10 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> getAllFilms() {
-        return films.values();
+        return filmStorage.getFilms().values();
     }
 
     private int getNextId() {
-        int currentMaxId = films.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+        return ++filmId;
     }
 }
