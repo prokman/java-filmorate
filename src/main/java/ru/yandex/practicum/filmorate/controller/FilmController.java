@@ -42,18 +42,20 @@ public class FilmController {
     }
 
     @GetMapping
-    public Collection<Film> getPopularFilms(
-            @RequestParam(required = false) Integer count
-    ) {
-        if (count == null) {
-            if (count <= 0) {
-                throw new ValidationException("Параметр count-" + count + " не должен быть меньше либо равен 0");
-            }
-            Collection<Film> films = filmService.getPopularFilms(count);
-            log.info("список всех фильмов получен из таблицы");
-            return films;
-        }
+    public Collection<Film> getFilms() {
         Collection<Film> films = filmService.getAllFilms().values();
+        log.info("список всех фильмов получен из таблицы");
+        return films;
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(
+            @RequestParam(defaultValue = "10") Integer count
+    ) {
+        if (count <= 0) {
+            throw new ValidationException("Параметр count-" + count + " не должен быть меньше либо равен 0");
+        }
+        Collection<Film> films = filmService.getPopularFilms(count);
         log.info("список всех фильмов получен из таблицы");
         return films;
     }
