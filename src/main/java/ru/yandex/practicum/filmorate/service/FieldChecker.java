@@ -1,20 +1,30 @@
 package ru.yandex.practicum.filmorate.service;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
+@Service
 public class FieldChecker {
     private final int maxDescriptionLength = 200;
     private static final Logger log =
             (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(FilmController.class);
 
     public void checkFilmField(Film film) {
+        log.setLevel(Level.INFO);
+        if (film == null) {
+            log.info("передан пустой запрос");
+            throw new NotFoundException("передан пустой запрос");
+        }
+
         if (film.getName() == null || film.getName().isBlank()) {
             log.info("Отсутствует название фильма");
             throw new ValidationException("Отсутствует название фильма");
@@ -49,6 +59,12 @@ public class FieldChecker {
     }
 
     public void checkUserField(User user) {
+        log.setLevel(Level.INFO);
+        if (user == null) {
+            log.info("передан пустой запрос");
+            throw new NotFoundException("передан пустой запрос");
+        }
+
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.info("электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");

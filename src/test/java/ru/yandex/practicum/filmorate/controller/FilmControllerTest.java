@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FieldChecker;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
 
@@ -17,38 +19,39 @@ class FilmControllerTest {
 
     @Test
     void addFilmNormal() {
-        FilmController filmController = new FilmController();
+
+        FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         filmController.addFilm(normal);
         assertTrue(filmController.getAllFilms().contains(normal));
     }
 
     @Test
     void addFilmEmptyName() {
-        FilmController filmController = new FilmController();
+        FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         assertThrows(RuntimeException.class, () -> filmController.addFilm(emptyName));
     }
 
     @Test
     void addFilmEmptyDesciption() {
-        FilmController filmController = new FilmController();
+        FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         assertThrows(RuntimeException.class, () -> filmController.addFilm(emptyDesciption));
     }
 
     @Test
     void addFilmWrangReleaseDate() {
-        FilmController filmController = new FilmController();
+        FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         assertThrows(RuntimeException.class, () -> filmController.addFilm(wrangReleaseDate));
     }
 
     @Test
     void addFilmWrangDuration() {
-        FilmController filmController = new FilmController();
+        FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         assertThrows(RuntimeException.class, () -> filmController.addFilm(wrangDuration));
     }
 
     @Test
     void addEmpty() {
-        FilmController filmController = new FilmController();
+        FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         assertThrows(RuntimeException.class, () -> filmController.addFilm(null));
     }
 }
