@@ -3,13 +3,16 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.exception.NoContentException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.InMemoryUserStorage;
 
 import java.util.Collection;
+
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -76,13 +79,77 @@ public class UserService {
         if (userStorage.getUserById(userId) == null) {
             throw new NotFoundException("пользователь с id = " + userId + " не найден");
         }
-        //Optional<Collection<User>> friends = userStorage.getFriendsById(userId);
-        return userStorage.getFriendsById(userId);
+        return userStorage.getSetOfFriendsById(userId);
     }
 
     public Map<Integer, User> getAllUsers() {
         return userStorage.getAllUsers();
     }
 
+    public Collection<User> getCommonFriends (Integer userId, Integer friendId) {
+        if (userId == null) {
+            throw new ConditionsNotMetException("Id пользователя должен быть указан");
+        }
+        if (friendId == null) {
+            throw new ConditionsNotMetException("Id друга должен быть указан");
+        }
+
+        if (userStorage.getUserById(userId)==null) {
+            throw new NotFoundException("пользователь с ид " + userId + " отсутствует");
+        }
+
+        if (userStorage.getUserById(friendId)==null) {
+            throw new NotFoundException("пользователь с ид " + friendId + " отсутствует");
+        }
+
+        return userStorage.getSetOfFriendsById(userId)
+                .orElseThrow(()->new NoContentException("пользователь с ид "
+                        + userId + " не друг " + friendId))
+                .stream()
+                .filter(user ->
+                        userStorage.getSetOfFriendsById(friendId)
+                                .orElseThrow(()->new NoContentException("пользователь с ид "
+                                        + user.getId() + " не друг " + friendId)).contains(user))
+                .collect(Collectors.toList());
+    }
+
+
+
+    public void removeFriend(Integer userId, Integer friendId) {
+        if (userId == null) {
+            throw new ConditionsNotMetException("Id пользователя должен быть указан");
+        }
+        if (friendId == null) {
+            throw new ConditionsNotMetException("Id друга должен быть указан");
+        }
+
+        if (userStorage.getUserById(userId)==null) {
+            throw new NotFoundException("пользователь с ид " + userId + " отсутствует");
+        }
+
+        if (userStorage.getUserById(friendId)==null) {
+            throw new NotFoundException("пользователь с ид " + friendId + " отсутствует");
+        }
+
+        if (!userStorage.getSetOfFriendsById(userId)
+                .orElseThrow(()->new NoContentException("пользователь с ид "
+                        + userId + " не друг " + friendId))
+                .contains(userStorage.getUserById(friendId))) {
+            throw new NoContentException("пользователь с ид (юзер)" + userId + " не друг " + friendId);
+        }
+
+        if (!userStorage.getSetOfFriendsById(friendId)
+                .orElseThrow(()->new NoContentException("пользователь с ид "
+                        + friendId + " не друг " + userId))
+                .contains(userStorage.getUserById(userId))) {
+            throw new NotFoundException("пользователь с ид (френд)" + friendId + " не друг " + userId);
+        }
+        userStorage.removeFriend(userId, userStorage.getUserById(friendId));
+        userStorage.removeFriend(friendId, userStorage.getUserById(userId));
+    }
+
 
 }
+
+
+

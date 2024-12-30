@@ -47,16 +47,15 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public void addFriend(Integer userId, User friend) {
-        friends.computeIfAbsent(userId, key->new HashSet<>()).add(friend);
+        friends.computeIfAbsent(userId, key -> new HashSet<>()).add(friend);
     }
 
-    public Optional<Collection<User>> getFriendsById(Integer userId) {
+    public Optional<Collection<User>> getSetOfFriendsById(Integer userId) {
         return Optional.ofNullable(friends.get(userId));
     }
 
-    public void removeFriend (Integer userId, User friend) {
-        friends.computeIfPresent(userId, key->friends.get(userId)).remove(friend);
-                //computeIfAbsent(userId, key->new HashSet<>()).add(friend);
+    public void removeFriend(Integer userId, User friend) {
+        friends.computeIfPresent(userId, (key, value) -> value).remove(friend);
     }
 
     public int getNextId() {
