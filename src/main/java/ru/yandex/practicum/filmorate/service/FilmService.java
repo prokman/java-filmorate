@@ -61,10 +61,6 @@ public class FilmService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFilmById(Integer id) {
-
-    }
-
     public void addLike(Integer filmId, Integer userId) {
         if (filmId == null) {
             throw new ConditionsNotMetException("Id фильма должен быть указан");
@@ -100,6 +96,4 @@ public class FilmService {
         }
         filmStorage.removeLike(filmId, userId);
     }
-
-
 }

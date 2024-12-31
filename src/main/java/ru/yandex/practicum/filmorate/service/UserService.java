@@ -113,7 +113,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-
     public void removeFriend(Integer userId, Integer friendId) {
         if (userId == null) {
             throw new ConditionsNotMetException("Id пользователя должен быть указан");
@@ -146,8 +145,6 @@ public class UserService {
         userStorage.removeFriend(userId, userStorage.getUserById(friendId));
         userStorage.removeFriend(friendId, userStorage.getUserById(userId));
     }
-
-
 }
 
 

@@ -19,10 +19,9 @@ class FilmControllerTest {
 
     @Test
     void addFilmNormal() {
-
         FilmController filmController = new FilmController(new FieldChecker(), new FilmService());
         filmController.addFilm(normal);
-        assertTrue(filmController.getAllFilms().contains(normal));
+        assertTrue(filmController.getFilms().contains(normal));
     }
 
     @Test
