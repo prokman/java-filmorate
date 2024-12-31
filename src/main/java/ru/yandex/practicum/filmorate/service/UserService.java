@@ -86,7 +86,7 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    public Collection<User> getCommonFriends (Integer userId, Integer friendId) {
+    public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
         if (userId == null) {
             throw new ConditionsNotMetException("Id пользователя должен быть указан");
         }
@@ -94,25 +94,24 @@ public class UserService {
             throw new ConditionsNotMetException("Id друга должен быть указан");
         }
 
-        if (userStorage.getUserById(userId)==null) {
+        if (userStorage.getUserById(userId) == null) {
             throw new NotFoundException("пользователь с ид " + userId + " отсутствует");
         }
 
-        if (userStorage.getUserById(friendId)==null) {
+        if (userStorage.getUserById(friendId) == null) {
             throw new NotFoundException("пользователь с ид " + friendId + " отсутствует");
         }
 
         return userStorage.getSetOfFriendsById(userId)
-                .orElseThrow(()->new NoContentException("пользователь с ид "
+                .orElseThrow(() -> new NoContentException("пользователь с ид "
                         + userId + " не друг " + friendId))
                 .stream()
                 .filter(user ->
                         userStorage.getSetOfFriendsById(friendId)
-                                .orElseThrow(()->new NoContentException("пользователь с ид "
+                                .orElseThrow(() -> new NoContentException("пользователь с ид "
                                         + user.getId() + " не друг " + friendId)).contains(user))
                 .collect(Collectors.toList());
     }
-
 
 
     public void removeFriend(Integer userId, Integer friendId) {
@@ -123,23 +122,23 @@ public class UserService {
             throw new ConditionsNotMetException("Id друга должен быть указан");
         }
 
-        if (userStorage.getUserById(userId)==null) {
+        if (userStorage.getUserById(userId) == null) {
             throw new NotFoundException("пользователь с ид " + userId + " отсутствует");
         }
 
-        if (userStorage.getUserById(friendId)==null) {
+        if (userStorage.getUserById(friendId) == null) {
             throw new NotFoundException("пользователь с ид " + friendId + " отсутствует");
         }
 
         if (!userStorage.getSetOfFriendsById(userId)
-                .orElseThrow(()->new NoContentException("пользователь с ид "
+                .orElseThrow(() -> new NoContentException("пользователь с ид "
                         + userId + " не друг " + friendId))
                 .contains(userStorage.getUserById(friendId))) {
             throw new NoContentException("пользователь с ид (юзер)" + userId + " не друг " + friendId);
         }
 
         if (!userStorage.getSetOfFriendsById(friendId)
-                .orElseThrow(()->new NoContentException("пользователь с ид "
+                .orElseThrow(() -> new NoContentException("пользователь с ид "
                         + friendId + " не друг " + userId))
                 .contains(userStorage.getUserById(userId))) {
             throw new NotFoundException("пользователь с ид (френд)" + friendId + " не друг " + userId);

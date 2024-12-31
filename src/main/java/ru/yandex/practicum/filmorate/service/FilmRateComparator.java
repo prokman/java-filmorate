@@ -10,9 +10,9 @@ public class FilmRateComparator implements Comparator<Film> {
     @Override
     public int compare(Film o1, Film o2) {
         if (o1.getRating() == o2.getRating()) {
-            return  o1.getId() - o2.getId();
+            return o2.getId() - o1.getId();
         } else {
-            return  o1.getRating() - o2.getRating();
+            return o2.getRating() - o1.getRating();
         }
     }
 }

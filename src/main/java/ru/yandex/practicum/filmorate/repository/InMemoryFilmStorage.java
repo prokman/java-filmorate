@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +36,21 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void addFilm(Film film) {
         films.put(film.getId(), film);
     }
+
+    public void addLike(Integer filmId, Integer userId) {
+        likes.computeIfAbsent(filmId, key -> new HashSet<>()).add(userId);
+        Film filmForLike = films.get(filmId);
+        filmForLike.setRating(likes.get(filmId).size());
+        films.put(filmId, filmForLike);
+    }
+
+    public void removeLike(Integer filmId, Integer userId) {
+        likes.computeIfPresent(filmId, (key, value) -> value).remove(userId);
+        Film filmForLike = films.get(filmId);
+        filmForLike.setRating(likes.get(filmId).size());
+        films.put(filmId, filmForLike);
+    }
+
 
     public int getNextId() {
         return ++filmId;

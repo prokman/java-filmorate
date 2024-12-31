@@ -41,6 +41,12 @@ public class FilmController {
         return updatedFilm;
     }
 
+    @PutMapping("/{filmId}/like/{userId}")
+    public void addLike(@PathVariable Integer filmId, @PathVariable Integer userId) {
+        filmService.addLike(filmId, userId);
+        log.info("фильму " + filmId + " поставлен лайк пользователем " + userId);
+    }
+
     @GetMapping
     public Collection<Film> getFilms() {
         Collection<Film> films = filmService.getAllFilms().values();
@@ -58,5 +64,11 @@ public class FilmController {
         Collection<Film> films = filmService.getPopularFilms(count);
         log.info("список всех фильмов получен из таблицы");
         return films;
+    }
+
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public void removeLike(@PathVariable Integer filmId, @PathVariable Integer userId) {
+        filmService.removeLike(filmId, userId);
+        log.info("у фильма " + filmId + " удален лайк пользователем " + userId);
     }
 }
