@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.repository.FilmStorage;
 import ru.yandex.practicum.filmorate.repository.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.repository.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.repository.UserStorage;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,13 +16,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
-    private final InMemoryFilmStorage filmStorage;
-    private final InMemoryUserStorage userStorage;
 
-    public FilmService() {
-        this.filmStorage = new InMemoryFilmStorage();
-        this.userStorage = new InMemoryUserStorage();
-    }
+    private final FilmStorage filmStorage;
+
+    private final UserStorage userStorage;
 
     @Autowired
     public FilmService(InMemoryFilmStorage filmStorage, InMemoryUserStorage userStorage) {

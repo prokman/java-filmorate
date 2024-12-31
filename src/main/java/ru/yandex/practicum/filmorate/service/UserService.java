@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exception.NoContentException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.repository.UserStorage;
 
 import java.util.Collection;
 
@@ -16,11 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final InMemoryUserStorage userStorage;
 
-    public UserService() {
-        this.userStorage = new InMemoryUserStorage();
-    }
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(InMemoryUserStorage userStorage) {

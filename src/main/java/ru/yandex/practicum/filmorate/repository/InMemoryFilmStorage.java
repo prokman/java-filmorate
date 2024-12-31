@@ -51,7 +51,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.put(filmId, filmForLike);
     }
 
-
     public int getNextId() {
         return ++filmId;
     }
