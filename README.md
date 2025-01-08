@@ -1,3 +1,3 @@
 # java-filmorate
-Template repository for Filmorate project.
+Filmorate project.
 ![Alt text](./DB_scheme.png)
