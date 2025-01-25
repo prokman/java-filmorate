@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,3 +97,4 @@ public class FilmService {
         filmStorage.removeLike(filmId, userId);
     }
 }
+*/

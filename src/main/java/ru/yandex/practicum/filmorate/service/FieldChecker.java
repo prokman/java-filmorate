@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.controller.FilmController;
+//import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class FieldChecker {
     private final int maxDescriptionLength = 200;
     private static final Logger log =
-            (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(FilmController.class);
+            (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(FieldChecker.class);
 
     public void checkFilmField(Film film) {
         log.setLevel(Level.INFO);

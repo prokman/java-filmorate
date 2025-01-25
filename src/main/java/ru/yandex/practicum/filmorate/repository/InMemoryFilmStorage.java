@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.repository;
 
 import ch.qos.logback.classic.Logger;
@@ -55,3 +56,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         return ++filmId;
     }
 }
+*/

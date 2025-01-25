@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.controller;
 
 import ch.qos.logback.classic.Logger;
@@ -71,4 +72,4 @@ public class FilmController {
         filmService.removeLike(filmId, userId);
         log.info("у фильма " + filmId + " удален лайк пользователем " + userId);
     }
-}
+}*/

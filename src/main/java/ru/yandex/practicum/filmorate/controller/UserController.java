@@ -3,15 +3,16 @@ package ru.yandex.practicum.filmorate.controller;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FieldChecker;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -29,18 +30,18 @@ public class UserController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@RequestBody User user) {
+    //@ResponseStatus(HttpStatus.CREATED)
+    public UserDto addUser(@RequestBody User user) {
         fieldChecker.checkUserField(user);
-        User addedUser = userService.addUser(user);
+        UserDto addedUser = userService.addUser(user);
         log.info("пользователь добавлен в таблицу");
-        return user;
+        return addedUser;
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User newUser) {
+    public UserDto updateUser(@RequestBody User newUser) {
         fieldChecker.checkUserField(newUser);
-        User updatedUser = userService.updateUser(newUser);
+        UserDto updatedUser = userService.updateUser(newUser);
         log.info("существующий пользователь обновлен обновлен в таблице");
         return updatedUser;
     }
@@ -52,26 +53,26 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<User> getAllUsers() {
-        Collection<User> users = userService.getAllUsers().values();
-        log.info("список всех фильмов получен из таблицы");
+    public List<UserDto> getAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
+        log.info("список всех пользователей получен из БД");
         return users;
     }
 
     @GetMapping("/{userId}/friends")
-    public Collection<User> getUsersFriends(@PathVariable Integer userId) {
-        Collection<User> friends = userService.getUsersFriends(userId).orElse(new HashSet<>());
+    public List<User> getListOfFriendsById(@PathVariable Integer userId) {
+        List<User> friends = userService.getListOfFriendsById(userId);
         log.info("список всех друзей пользователя " + userId + " получен");
         return friends;
     }
-
+/*
     @GetMapping("/{userId}/friends/common/{friendId}")
     public Collection<User> getCommonFriends(@PathVariable Integer userId, @PathVariable Integer friendId) {
         Collection<User> commonFriends = userService.getCommonFriends(userId, friendId);
         log.info("список общих друзей " + userId + " и " + friendId + " получен");
         return commonFriends;
     }
-
+*/
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void removeFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {

@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.repository;
 
 import ch.qos.logback.classic.Logger;
@@ -34,6 +35,9 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(id);
     }
 
+
+
+
     public void addFriend(Integer userId, User friend) {
         friends.computeIfAbsent(userId, key -> new HashSet<>()).add(friend);
     }
@@ -50,3 +54,4 @@ public class InMemoryUserStorage implements UserStorage {
         return ++userId;
     }
 }
+*/
