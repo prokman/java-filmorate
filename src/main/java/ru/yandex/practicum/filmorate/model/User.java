@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-
 public class User {
     private Integer id;
     private String name;

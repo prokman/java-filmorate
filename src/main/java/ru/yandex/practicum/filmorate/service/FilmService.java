@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
@@ -11,36 +11,25 @@ import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmUpdateMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.repository.FilmDbStorage;
-import ru.yandex.practicum.filmorate.repository.MpaDbStorage;
+import ru.yandex.practicum.filmorate.repository.LikeDbStorage;
 import ru.yandex.practicum.filmorate.repository.UserDbStorage;
 
-
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FilmService {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
-    FilmMapper filmMapper;
-    FilmUpdateMapper filmUpdateMapper;
+    private final LikeDbStorage likeDbStorage;
+    private final FilmMapper filmMapper;
+    private final FilmUpdateMapper filmUpdateMapper;
 
-
-    @Autowired
-    public FilmService(FilmDbStorage filmDbStorage, FilmMapper filmMapper,
-                       FilmUpdateMapper filmUpdateMapper, UserDbStorage userDbStorage) {
-        this.filmDbStorage = filmDbStorage;
-        this.filmMapper = filmMapper;
-        this.filmUpdateMapper=filmUpdateMapper;
-        this.userDbStorage = userDbStorage;
-    }
 
     public Film addFilm(NewFilmRequest newFilmRequest) {
         Film film = filmMapper.mapFilmReqToFilm(newFilmRequest);
         return filmDbStorage.addFilm(film);
-        //return film;
     }
 
     public Film updateFilm(NewFilmUpdate newfilm) {
@@ -49,28 +38,18 @@ public class FilmService {
         }
         Film film = filmUpdateMapper.mapFilmUpdateToFilm(newfilm);
         return filmDbStorage.updateFilm(film);
-//        Film existingFilm = filmStorage.getFilmById(newfilm.getId());
-//        if (existingFilm != null) {
-//            existingFilm.setName(newfilm.getName());
-//            existingFilm.setDescription(newfilm.getDescription());
-//            existingFilm.setDuration(newfilm.getDuration());
-//            existingFilm.setReleaseDate(newfilm.getReleaseDate());
-//            filmStorage.addFilm(existingFilm);
-//            return existingFilm;
-//        }
-//        throw new NotFoundException("фильм с id = " + newfilm.getId() + " не найден");
     }
 
     public List<FilmDto> getAllFilms() {
         return filmDbStorage.getAllFilms();
     }
 
-//    public Collection<Film> getPopularFilms(int count) {
-//        return filmStorage.getAllFilms().values().stream()
-//                .sorted(new FilmRateComparator())
-//                .limit(count)
-//                .collect(Collectors.toList());
-//    }
+    public List<FilmDto> getPopularFilms(int limit) {
+        List<Integer> ratedFilmId = likeDbStorage.getRatedFilmId(limit);
+        return ratedFilmId.stream()
+                .map(FilmId -> filmDbStorage.getFilmById(FilmId).get())
+                .collect(Collectors.toList());
+    }
 
     public void addLike(Integer filmId, Integer userId) {
         if (filmId == null) {
@@ -80,7 +59,7 @@ public class FilmService {
             throw new ConditionsNotMetException("Id пользователя должен быть указан");
         }
 
-        if (filmDbStorage.getFilmById(filmId).isEmpty() ) {
+        if (filmDbStorage.getFilmById(filmId).isEmpty()) {
             throw new NotFoundException("фильм с ид " + filmId + " отсутствует");
         }
 
@@ -98,7 +77,7 @@ public class FilmService {
             throw new ConditionsNotMetException("Id пользователя должен быть указан");
         }
 
-        if (filmDbStorage.getFilmById(filmId).isEmpty() ) {
+        if (filmDbStorage.getFilmById(filmId).isEmpty()) {
             throw new NotFoundException("фильм с ид " + filmId + " отсутствует");
         }
 
@@ -107,5 +86,12 @@ public class FilmService {
         }
         filmDbStorage.removeLike(filmId, userId);
     }
+
+    public FilmDto getFilmById(Integer filmId) {
+        return filmDbStorage.getFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException("фильма с ID " + filmId + " не найден"));
+    }
+
+
 }
 

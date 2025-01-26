@@ -11,10 +11,8 @@ import ru.yandex.practicum.filmorate.repository.mapper.UserRawMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -66,10 +64,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> findById(Integer user_id) {
+    public Optional<User> findById(Integer userId) {
         final String Find_BY_ID_QUERY = "SELECT * FROM users WHERE user_id = ?";
         try {
-            User result = jdbc.queryForObject(Find_BY_ID_QUERY, userRawMapper, user_id);
+            User result = jdbc.queryForObject(Find_BY_ID_QUERY, userRawMapper, userId);
             return Optional.ofNullable(result);
         } catch (EmptyResultDataAccessException ignored) {
             return Optional.empty();
@@ -89,10 +87,12 @@ public class UserDbStorage implements UserStorage {
 
     public List<User> getListOfFriendsById(Integer userId) {
         String query = "SELECT friend_id FROM friends WHERE user_id = ?";
-        List<User> listOfFriends =  jdbc.query(query, friendsIdRawMapper, userId)
-                  .stream()
-                  .map(integer -> {return findById(integer).get();})
-                  .collect(Collectors.toList());
+        List<User> listOfFriends = jdbc.query(query, friendsIdRawMapper, userId)
+                .stream()
+                .map(integer -> {
+                    return findById(integer).get();
+                })
+                .collect(Collectors.toList());
         return listOfFriends;
     }
 

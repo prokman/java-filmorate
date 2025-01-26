@@ -7,10 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class FriendsIdRawMapper implements RowMapper<Integer> {
+public class LikeRawMapper implements RowMapper<Integer> {
     @Override
     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-        return rs.getInt("friend_ID");
+        return rs.getInt("Film_id");
     }
 }

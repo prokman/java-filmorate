@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FieldChecker;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -55,24 +54,32 @@ public class FilmController {
     }
 
     @GetMapping
-    public  List<FilmDto> getFilms() {
+    public List<FilmDto> getFilms() {
         List<FilmDto> filmDtoList = filmService.getAllFilms();
         log.info("список всех фильмов получен из таблицы");
         return filmDtoList;
     }
 
+    @GetMapping("/{filmId}")
+    public FilmDto getFilmById(@PathVariable Integer filmId) {
+        FilmDto filmDto = filmService.getFilmById(filmId);
+        log.info("фильмов " + filmId + " получен");
+        return filmDto;
+    }
 
-//    @GetMapping("/popular")
-//    public Collection<Film> getPopularFilms(
-//            @RequestParam(defaultValue = "10") Integer count
-//    ) {
-//        if (count <= 0) {
-//            throw new ValidationException("Параметр count-" + count + " не должен быть меньше либо равен 0");
-//        }
-//        Collection<Film> films = filmService.getPopularFilms(count);
-//        log.info("список всех фильмов получен из таблицы");
-//        return films;
-//    }
+
+    @GetMapping("/popular")
+    public List<FilmDto> getPopularFilms(
+            @RequestParam(defaultValue = "10") Integer count
+    ) {
+        if (count <= 0) {
+            throw new ValidationException("Параметр count-" + count + " не должен быть меньше либо равен 0");
+        }
+        List<FilmDto> films = filmService.getPopularFilms(count);
+        log.info("список всех фильмов получен из таблицы");
+        return films;
+    }
+
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public void removeLike(@PathVariable Integer filmId, @PathVariable Integer userId) {

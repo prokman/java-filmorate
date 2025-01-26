@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.repository.mapper.GenreRawMapper;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +17,10 @@ public class GenreDbStorage implements GenreStorage {
     private final GenreRawMapper genreRawMapper;
 
     @Override
-    public Optional<Genre> getGenById(Integer genere_id) {
+    public Optional<Genre> getGenById(Integer genereId) {
         String genreQuery = "SELECT * FROM GENRE WHERE GENRE_ID = ?";
         try {
-            Genre genre = jdbc.queryForObject(genreQuery, genreRawMapper, genere_id);
+            Genre genre = jdbc.queryForObject(genreQuery, genreRawMapper, genereId);
             return Optional.ofNullable(genre);
         } catch (EmptyResultDataAccessException ignored) {
             return Optional.empty();

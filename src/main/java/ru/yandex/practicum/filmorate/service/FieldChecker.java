@@ -2,19 +2,16 @@ package ru.yandex.practicum.filmorate.service;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import lombok.NoArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-//import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
 import ru.yandex.practicum.filmorate.dto.NewFilmUpdate;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.GenreDbStorage;
-import ru.yandex.practicum.filmorate.repository.MpaDbStorage;
+
 
 import java.time.LocalDate;
 import java.util.stream.Collectors;
@@ -28,7 +25,7 @@ public class FieldChecker {
 
     @Autowired
     public FieldChecker(GenreDbStorage genreDbStorage) {
-        this.genreDbStorage=genreDbStorage;
+        this.genreDbStorage = genreDbStorage;
     }
 
     public void checkUpdateFilmField(NewFilmUpdate film) {
@@ -70,7 +67,7 @@ public class FieldChecker {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
 
-        if (film.getMpa() == null || film.getMpa().getId()==null) {
+        if (film.getMpa() == null || film.getMpa().getId() == null) {
             log.info("Отсутствует рейтинг фильма");
             throw new ValidationException("Отсутствует рейтинг фильма");
         }
@@ -116,29 +113,17 @@ public class FieldChecker {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
 
-        if (film.getMpa() == null || film.getMpa().getId()==null) {
+        if (film.getMpa() == null || film.getMpa().getId() == null) {
             log.info("Отсутствует рейтинг фильма");
             throw new ValidationException("Отсутствует рейтинг фильма");
         }
 
-        if (film.getGenres() == null || film.getGenres().isEmpty()) {
-            log.info("Отсутствуют жанры фильма");
-            throw new ValidationException("Отсутствуют жанры фильма");
-        }
-
-        if (film.getGenres().stream()
+        if (film.getGenres() != null && film.getGenres().stream()
                 .filter(genre -> genreDbStorage.getAllGenres().contains(genre))
                 .collect(Collectors.toSet()).isEmpty()) {
             log.info("Несуществующий жанр фильма");
             throw new ValidationException("Несуществующий жанр фильма");
         }
-
-
-
-
-
-
-
     }
 
     public void checkUserField(User user) {
