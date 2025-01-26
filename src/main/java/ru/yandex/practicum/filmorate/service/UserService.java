@@ -83,36 +83,37 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-//    public Optional<User> findById(User user) {
-//        return userDbStorage.findById(user);
-//    }
-
-   /* public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
+    public List<User> getCommonFriends(Integer userId, Integer friendId) {
         if (userId == null) {
             throw new ConditionsNotMetException("Id пользователя должен быть указан");
         }
         if (friendId == null) {
             throw new ConditionsNotMetException("Id друга должен быть указан");
         }
-
-        if (userDbStorage.getUserById(userId) == null) {
+        if (userDbStorage.findById(userId).isEmpty()) {
             throw new NotFoundException("пользователь с ид " + userId + " отсутствует");
         }
-
-        if (userDbStorage.getUserById(friendId) == null) {
+        if (userDbStorage.findById(friendId).isEmpty()) {
             throw new NotFoundException("пользователь с ид " + friendId + " отсутствует");
         }
 
-        return userDbStorage.getSetOfFriendsById(userId)
-                .orElseThrow(() -> new NoContentException("пользователь с ид "
-                        + userId + " не друг " + friendId))
-                .stream()
-                .filter(user ->
-                        userDbStorage.getSetOfFriendsById(friendId)
-                                .orElseThrow(() -> new NoContentException("пользователь с ид "
-                                        + user.getId() + " не друг " + friendId)).contains(user))
-                .collect(Collectors.toList());
-    }*/
+        return userDbStorage.getListOfFriendsById(userId)
+                        .stream()
+                        .filter(user -> userDbStorage
+                                .getListOfFriendsById(friendId)
+                               // .contains(userDbStorage.findById(user.getId()).get())
+                                .contains(userDbStorage.findById(user.getId()).get()))
+                                .collect(Collectors.toList());
+//                getSetOfFriendsById(userId)
+//                .orElseThrow(() -> new NoContentException("пользователь с ид "
+//                        + userId + " не друг " + friendId))
+//                .stream()
+//                .filter(user ->
+//                        userDbStorage.getSetOfFriendsById(friendId)
+//                                .orElseThrow(() -> new NoContentException("пользователь с ид "
+//                                        + user.getId() + " не друг " + friendId)).contains(user))
+//                .collect(Collectors.toList());
+    }
 
     public void removeFriend(Integer userId, Integer friendId) {
         if (userId == null) {

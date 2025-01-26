@@ -15,5 +15,4 @@ public class UserMapper {
         dto.setBirthday(user.getBirthday());
         return dto;
     }
-
 }

@@ -30,7 +30,6 @@ public class UserController {
     }
 
     @PostMapping
-    //@ResponseStatus(HttpStatus.CREATED)
     public UserDto addUser(@RequestBody User user) {
         fieldChecker.checkUserField(user);
         UserDto addedUser = userService.addUser(user);
@@ -65,14 +64,14 @@ public class UserController {
         log.info("список всех друзей пользователя " + userId + " получен");
         return friends;
     }
-/*
+
     @GetMapping("/{userId}/friends/common/{friendId}")
-    public Collection<User> getCommonFriends(@PathVariable Integer userId, @PathVariable Integer friendId) {
-        Collection<User> commonFriends = userService.getCommonFriends(userId, friendId);
+    public List<User> getCommonFriends(@PathVariable Integer userId, @PathVariable Integer friendId) {
+        List<User> commonFriends = userService.getCommonFriends(userId, friendId);
         log.info("список общих друзей " + userId + " и " + friendId + " получен");
         return commonFriends;
     }
-*/
+
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void removeFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {

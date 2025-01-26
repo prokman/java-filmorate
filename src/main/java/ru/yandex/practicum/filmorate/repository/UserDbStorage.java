@@ -20,19 +20,14 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
-    private static final String INSERT_QUERY
-            = "INSERT INTO USERS(NAME, LOGIN, EMAIL, BIRTHDAY) VALUES(?, ?, ?, ?)"; //id->user_id
-    private static final String Find_ALL_QUERY = "SELECT * FROM users";
-    private static final String UPDATE_QUERY = "UPDATE users SET name = ?, login = ?, email = ?, birthday = ? " +
-            " WHERE user_id = ?";
-    private static final String Find_BY_ID_QUERY = "SELECT * FROM users WHERE user_id = ?";
-
     private final JdbcOperations jdbc;
     private final UserRawMapper userRawMapper;
     private final FriendsIdRawMapper friendsIdRawMapper;
 
     @Override
     public User addUser(User user) {
+        final String INSERT_QUERY
+                = "INSERT INTO USERS(NAME, LOGIN, EMAIL, BIRTHDAY) VALUES(?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(con -> {
             PreparedStatement ps = con.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -40,7 +35,6 @@ public class UserDbStorage implements UserStorage {
             ps.setObject(2, user.getLogin());
             ps.setObject(3, user.getEmail());
             ps.setObject(4, user.getBirthday());
-
             return ps;
         }, keyHolder);
         Integer id = keyHolder.getKeyAs(Integer.class);
@@ -48,12 +42,14 @@ public class UserDbStorage implements UserStorage {
             user.setId(id);
             return user;
         } else {
-            throw new RuntimeException("не удалось сохранить данные");
+            throw new RuntimeException("не удалось сохранить данные фильма");
         }
     }
 
     @Override
     public User update(User user) {
+        final String UPDATE_QUERY = "UPDATE users SET name = ?, login = ?, email = ?, birthday = ? " +
+                " WHERE user_id = ?";
         int rowsUpdated = jdbc.update(UPDATE_QUERY, user.getName(), user.getLogin(),
                 user.getEmail(), user.getBirthday(), user.getId());
         if (rowsUpdated == 0) {
@@ -65,11 +61,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
+        final String Find_ALL_QUERY = "SELECT * FROM users";
         return jdbc.query(Find_ALL_QUERY, userRawMapper);
     }
 
     @Override
     public Optional<User> findById(Integer user_id) {
+        final String Find_BY_ID_QUERY = "SELECT * FROM users WHERE user_id = ?";
         try {
             User result = jdbc.queryForObject(Find_BY_ID_QUERY, userRawMapper, user_id);
             return Optional.ofNullable(result);
@@ -105,6 +103,5 @@ public class UserDbStorage implements UserStorage {
         if (rowsUpdated <= 0) {
             throw new RuntimeException("не удалось удалить данные");
         }
-
     }
 }

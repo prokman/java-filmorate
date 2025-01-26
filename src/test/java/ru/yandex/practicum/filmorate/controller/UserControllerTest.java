@@ -12,10 +12,10 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
-    private User userNormal = new User("asdsd@ya.ru","Login", "Name", LocalDate.parse("2024-10-06"));
-    private User userEmptyMail = new User("","Login", "Name", LocalDate.parse("2024-10-06"));
-    private User userWrangMail = new User("asdasd.ru","Login", "Name", LocalDate.parse("2024-10-06"));
-    private User userEmptyLogin = new User("asdsd@ya.ru","", "Name", LocalDate.parse("2024-10-06"));
+    private User userNormal = new User("asdsd@ya.ru", "Login", "Name", LocalDate.parse("2024-10-06"));
+    private User userEmptyMail = new User("", "Login", "Name", LocalDate.parse("2024-10-06"));
+    private User userWrangMail = new User("asdasd.ru", "Login", "Name", LocalDate.parse("2024-10-06"));
+    private User userEmptyLogin = new User("asdsd@ya.ru", "", "Name", LocalDate.parse("2024-10-06"));
 
     /*@Test
     void addUserNormal() {
