@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -58,12 +59,14 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+
     public List<User> getAllUsers() {
         final String Find_ALL_QUERY = "SELECT * FROM users";
         return jdbc.query(Find_ALL_QUERY, userRawMapper);
     }
 
     @Override
+
     public Optional<User> findById(Integer userId) {
         final String Find_BY_ID_QUERY = "SELECT * FROM users WHERE user_id = ?";
         try {
