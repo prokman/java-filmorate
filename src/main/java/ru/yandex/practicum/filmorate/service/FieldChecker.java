@@ -122,7 +122,7 @@ public class FieldChecker {
                 .filter(genre -> genreDbStorage.getAllGenres().contains(genre))
                 .collect(Collectors.toSet()).isEmpty()) {
             log.info("Несуществующий жанр фильма");
-            throw new ValidationException("Несуществующий жанр фильма");
+            throw new NotFoundException("Несуществующий жанр фильма");
         }
     }
 

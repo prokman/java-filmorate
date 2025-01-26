@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -28,7 +28,7 @@ public class FilmMapper {
         film.setReleaseDate(newFilmRequest.getReleaseDate());
         film.setDuration(newFilmRequest.getDuration());
         Mpa mpa = mpaDbStorage.getMpaById(newFilmRequest.getMpa().getId())
-                .orElseThrow(() -> new ValidationException("мпа с ид " + newFilmRequest.getMpa().getId() + " отсутствует"));
+                .orElseThrow(() -> new NotFoundException("мпа с ид " + newFilmRequest.getMpa().getId() + " отсутствует"));
         film.setMpa(mpa);
         if (newFilmRequest.getGenres() != null) {
             for (Genre genre : newFilmRequest.getGenres()) {
