@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import ru.yandex.practicum.filmorate.repository.mapper.FilmGenreRawMapper;
 import ru.yandex.practicum.filmorate.repository.mapper.FilmRawMapper;
+import ru.yandex.practicum.filmorate.repository.mapper.GenreRawMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -25,6 +26,7 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcOperations jdbc;
     private final FilmGenreRawMapper filmGenreRawMapper;
     private final FilmRawMapper filmRawMapper;
+    private final GenreRawMapper genreRawMapper;
     private final GenreDbStorage genreDbStorage;
 
     @Override
@@ -87,13 +89,12 @@ public class FilmDbStorage implements FilmStorage {
                         ps.setObject(1, genre.getId());
                     });
         } else {
-            String query = "SELECT Genre_ID FROM FILM_genre WHERE film_id = ?";
-            List<Integer> listOfGenre = jdbc.query(query, filmGenreRawMapper, film.getId());
-            LinkedHashSet<Genre> genres = listOfGenre.stream()
-                    .map(integer -> {
-                        return genreDbStorage.getGenById(integer).get();
-                    })
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            String query = "SELECT f.film_id, g.genre_id, g.genre_name " +
+                    "FROM FILM_GENRE as f JOIN GENRE as g " +
+                    "ON F.GENRE_ID = G.GENRE_ID " +
+                    "WHERE F.FILM_ID = ?";
+            LinkedHashSet<Genre> genres =
+                    new LinkedHashSet<>(jdbc.query(query, genreRawMapper, film.getId()));
             film.setGenres(genres);
         }
         return film;

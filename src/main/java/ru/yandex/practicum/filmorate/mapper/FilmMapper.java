@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.repository.GenreDbStorage;
 import ru.yandex.practicum.filmorate.repository.MpaDbStorage;
 
+import java.util.List;
+
 @Component
 public class FilmMapper {
     private MpaDbStorage mpaDbStorage;
@@ -19,6 +21,7 @@ public class FilmMapper {
     public FilmMapper(MpaDbStorage mpaDbStorage, GenreDbStorage genreDbStorage) {
         this.mpaDbStorage = mpaDbStorage;
         this.genreDbStorage = genreDbStorage;
+
     }
 
     public Film mapFilmReqToFilm(NewFilmRequest newFilmRequest) {
@@ -31,8 +34,11 @@ public class FilmMapper {
                 .orElseThrow(() -> new NotFoundException("мпа с ид " + newFilmRequest.getMpa().getId() + " отсутствует"));
         film.setMpa(mpa);
         if (newFilmRequest.getGenres() != null) {
+            //для нового фильма получаем названия жанров согласно имеющимся id жанров,
+            //жанры в запросе приходят без названий
+            List<Genre> genreList = genreDbStorage.getAllGenres();
             for (Genre genre : newFilmRequest.getGenres()) {
-                genre.setName(genreDbStorage.getGenById(genre.getId()).get().getName());
+                genre.setName(genreList.get(genre.getId()).getName());
             }
             film.setGenres(newFilmRequest.getGenres());
         }

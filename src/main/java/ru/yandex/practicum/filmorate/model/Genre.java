@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 public class Genre {
-    private  Integer id;
-    private  String name;
+    private Integer id;
+    private String name;
 }
