@@ -1,21 +1,23 @@
 package ru.yandex.practicum.filmorate.repository;
 
+import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage {
 
-    Map<Integer, Film> getAllFilms();
+    Film addFilm(Film film);
 
-    Film getFilmById(Integer id);
+    Film updateFilm(Film film);
 
-    void addFilm(Film film);
+    List<FilmDto> getAllFilms();
+
+    Optional<FilmDto> getFilmById(Integer filmid);
 
     void addLike(Integer filmId, Integer userId);
 
     void removeLike(Integer filmId, Integer userId);
-
-    int getNextId();
 
 }

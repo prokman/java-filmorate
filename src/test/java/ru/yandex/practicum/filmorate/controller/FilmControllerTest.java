@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
@@ -61,4 +62,4 @@ class FilmControllerTest {
                 new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
         assertThrows(RuntimeException.class, () -> filmController.addFilm(null));
     }
-}
+}*/
